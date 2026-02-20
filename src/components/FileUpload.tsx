@@ -162,12 +162,12 @@ const FileUpload = ({
 
             <div className="flex-1 min-w-0">
               <div className="flex items-start gap-2">
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 overflow-hidden">
                   <TooltipProvider>
                     {isFileNameTruncated ? (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <h3 ref={fileNameRef} className="font-medium truncate">
+                          <h3 ref={fileNameRef} className="min-w-0 max-w-full font-medium truncate">
                             {selectedFile.name}
                           </h3>
                         </TooltipTrigger>
@@ -176,7 +176,7 @@ const FileUpload = ({
                         </TooltipContent>
                       </Tooltip>
                     ) : (
-                      <h3 ref={fileNameRef} className="font-medium truncate">
+                      <h3 ref={fileNameRef} className="min-w-0 max-w-full font-medium truncate">
                         {selectedFile.name}
                       </h3>
                     )}
