@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Calendar, Clock, Filter, Mail, Settings, Shield } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
+import { TimeCapsuleScene } from "@/components/landing/TimeCapsuleScene";
 
 const Index = () => {
   const howItWorksRef = useRef<HTMLElement>(null);
@@ -17,46 +18,71 @@ const Index = () => {
       <Navbar />
 
       {/* Hero */}
-      <section className="pt-32 pb-20 md:pt-44 md:pb-32">
-        <div className="container-custom">
-          <div className="max-w-3xl mx-auto text-center">
-            <div
-              className="inline-block px-3 py-1 mb-6 rounded-full bg-primary/10 text-primary text-sm font-medium slide-down"
-              style={{ animationDelay: "200ms" }}
-            >
-              Introducing TimeCapsule
-            </div>
-            <h1
-              className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-balance slide-down"
-              style={{ animationDelay: "400ms" }}
-            >
-              Schedule files to be sent <br className="hidden md:block" />
-              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                exactly when needed
-              </span>
-            </h1>
-            <p
-              className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto slide-down"
-              style={{ animationDelay: "600ms" }}
-            >
-              TimeCapsule lets you upload and schedule files to be delivered via email at precisely the right moment.
-            </p>
-            <div
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 slide-down"
-              style={{ animationDelay: "800ms" }}
-            >
-              <Link to="/auth">
-                <Button className="hero-button bg-primary hover:bg-primary/90 w-full sm:w-auto">
-                  Get Started
-                </Button>
-              </Link>
-              <Button
-                variant="outline"
-                className="hero-button w-full sm:w-auto"
-                onClick={scrollToHowItWorks}
+      <section className="relative pt-28 pb-16 md:pt-40 md:pb-24 overflow-hidden">
+        {/* Ambient cinematic glow */}
+        <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-[520px] w-[520px] rounded-full bg-primary/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-40 -left-28 h-[520px] w-[520px] rounded-full bg-accent/10 blur-3xl" />
+
+        <div className="container-custom relative">
+          <div className="grid items-center gap-12 md:grid-cols-12">
+            <div className="md:col-span-6">
+              <div
+                className="inline-flex items-center gap-2 px-3 py-1 mb-6 rounded-full bg-primary/10 text-primary text-sm font-medium slide-down"
+                style={{ animationDelay: "200ms" }}
               >
-                Learn More
-              </Button>
+                <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                Introducing TimeCapsule
+              </div>
+
+              <h1
+                className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-balance slide-down"
+                style={{ animationDelay: "400ms" }}
+              >
+                Schedule files to be sent{" "}
+                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  exactly when needed
+                </span>
+              </h1>
+
+              <p
+                className="text-lg md:text-xl text-muted-foreground mb-8 max-w-xl slide-down"
+                style={{ animationDelay: "600ms" }}
+              >
+                Upload once, pick the perfect moment, and TimeCapsule delivers your file automatically—right on time.
+              </p>
+
+              <div
+                className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 slide-down"
+                style={{ animationDelay: "800ms" }}
+              >
+                <Link to="/auth" className="w-full sm:w-auto">
+                  <Button className="hero-button bg-primary hover:bg-primary/90 w-full sm:w-auto">
+                    Get Started
+                  </Button>
+                </Link>
+                <Button variant="outline" className="hero-button w-full sm:w-auto" onClick={scrollToHowItWorks}>
+                  Learn More
+                </Button>
+              </div>
+
+              <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                <div className="glass-effect rounded-2xl p-4">
+                  <p className="text-xs text-muted-foreground">Delivery Precision</p>
+                  <p className="text-lg font-semibold">Minute-level</p>
+                </div>
+                <div className="glass-effect rounded-2xl p-4">
+                  <p className="text-xs text-muted-foreground">File Types</p>
+                  <p className="text-lg font-semibold">Any format</p>
+                </div>
+                <div className="hidden sm:block glass-effect rounded-2xl p-4">
+                  <p className="text-xs text-muted-foreground">Security</p>
+                  <p className="text-lg font-semibold">Access token</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="md:col-span-6 md:justify-self-end slide-up" style={{ animationDelay: "500ms" }}>
+              <TimeCapsuleScene />
             </div>
           </div>
         </div>
@@ -162,8 +188,8 @@ const Index = () => {
             </div>
 
             <div className="relative">
-              <div className="glass-card rounded-2xl shadow-lg p-6 md:p-8 max-w-md mx-auto bg-card text-card-foreground dark:bg-gray-800/80">
-                <div className="absolute -top-4 -right-4 bg-primary text-white text-xs px-3 py-1 rounded-full">
+              <div className="glass-card rounded-2xl shadow-lg p-6 md:p-8 max-w-md mx-auto bg-card/60 text-card-foreground">
+                <div className="absolute -top-4 -right-4 bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full">
                   Dashboard Preview
                 </div>
                 <div className="flex items-center justify-between mb-6">
@@ -178,18 +204,18 @@ const Index = () => {
                   {[1, 2, 3].map((item) => (
                     <div
                       key={item}
-                      className="rounded-lg bg-secondary/30 dark:bg-gray-700/50 p-3 shadow-sm border border-border"
+                      className="rounded-lg bg-secondary/30 p-3 shadow-sm border border-border"
                     >
                       <div className="flex justify-between items-start mb-2">
                         <div>
                           <p className="font-medium">Project Proposal.pdf</p>
                           <p className="text-xs text-muted-foreground">To: client@example.com</p>
                         </div>
-                        <div className="rounded-full bg-gray-200 dark:bg-gray-600 py-1 px-2 text-xs">
+                        <div className="rounded-full bg-muted text-muted-foreground py-1 px-2 text-xs">
                           Tomorrow
                         </div>
                       </div>
-                      <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5">
+                      <div className="w-full bg-muted rounded-full h-1.5">
                         <div
                           className="bg-primary h-1.5 rounded-full"
                           style={{ width: `${90 - item * 30}%` }}
@@ -199,7 +225,6 @@ const Index = () => {
                   ))}
                 </div>
               </div>
-
               <div className="absolute -z-10 -bottom-6 -right-6 h-64 w-64 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full blur-3xl" />
               <div className="absolute -z-10 -top-6 -left-6 h-48 w-48 bg-gradient-to-tr from-accent/10 to-primary/10 rounded-full blur-2xl" />
             </div>
