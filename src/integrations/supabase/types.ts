@@ -14,13 +14,107 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          role: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          role?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          role?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      scheduled_files: {
+        Row: {
+          access_token: string
+          created_at: string
+          file_name: string
+          file_size: number
+          file_type: string
+          id: string
+          recipient_email: string
+          scheduled_date: string
+          sent_at: string | null
+          status: string
+          storage_path: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          access_token: string
+          created_at?: string
+          file_name: string
+          file_size: number
+          file_type: string
+          id?: string
+          recipient_email: string
+          scheduled_date: string
+          sent_at?: string | null
+          status?: string
+          storage_path: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          access_token?: string
+          created_at?: string
+          file_name?: string
+          file_size?: number
+          file_type?: string
+          id?: string
+          recipient_email?: string
+          scheduled_date?: string
+          sent_at?: string | null
+          status?: string
+          storage_path?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      schedule_file: {
+        Args: {
+          p_access_token: string
+          p_file_name: string
+          p_file_size: number
+          p_file_type: string
+          p_recipient_email: string
+          p_scheduled_date: string
+          p_storage_path: string
+          p_user_id: string
+        }
+        Returns: string
+      }
+      update_scheduled_file: {
+        Args: {
+          p_id: string
+          p_recipient_email: string
+          p_scheduled_date: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
