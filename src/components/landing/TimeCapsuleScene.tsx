@@ -2,17 +2,32 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import type * as THREE from "three";
 
+function toThreeSafeHsl(value: string) {
+  // input from CSS vars: "208 83% 46%" -> output: "hsl(208, 83%, 46%)"
+  const parts = value
+    .trim()
+    .split(/\s+/)
+    .map((p) => p.replace("%", ""));
+
+  if (parts.length < 3) return null;
+  const [h, s, l] = parts;
+  if (!h || !s || !l) return null;
+  return `hsl(${h}, ${s}%, ${l}%)`;
+}
+
 function useThemeHslVars() {
   const read = () => {
     const root = document.documentElement;
     const s = getComputedStyle(root);
-    const primary = s.getPropertyValue("--primary").trim();
-    const accent = s.getPropertyValue("--accent").trim();
-    const muted = s.getPropertyValue("--muted").trim();
+
+    const primaryRaw = s.getPropertyValue("--primary");
+    const accentRaw = s.getPropertyValue("--accent");
+    const mutedRaw = s.getPropertyValue("--muted");
+
     return {
-      primary: primary ? `hsl(${primary})` : "#3b82f6",
-      accent: accent ? `hsl(${accent})` : "#38bdf8",
-      muted: muted ? `hsl(${muted})` : "#94a3b8",
+      primary: toThreeSafeHsl(primaryRaw) ?? "#3b82f6",
+      accent: toThreeSafeHsl(accentRaw) ?? "#38bdf8",
+      muted: toThreeSafeHsl(mutedRaw) ?? "#94a3b8",
     };
   };
 
@@ -40,7 +55,6 @@ class SceneErrorBoundary extends React.Component<
   }
 
   componentDidCatch(err: unknown) {
-    // Keep console noise minimal but useful
     // eslint-disable-next-line no-console
     console.error("TimeCapsuleScene crashed, falling back.", err);
   }
@@ -69,7 +83,7 @@ function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string
   return (
     <group ref={groupRef}>
       {/* Pedestal */}
-      <mesh position={[0, -1.35, 0]} rotation={[0, 0, 0]}>
+      <mesh position={[0, -1.35, 0]}>
         <cylinderGeometry args={[1.25, 1.05, 0.28, 64]} />
         <meshStandardMaterial color={colors.muted} metalness={0.55} roughness={0.35} />
       </mesh>
@@ -158,6 +172,7 @@ function StaticFallback() {
 
 export function TimeCapsuleScene() {
   const colors = useThemeHslVars();
+  const [canvasReady, setCanvasReady] = useState(false);
 
   return (
     <div className="relative w-full max-w-xl mx-auto aspect-[4/3] rounded-[2rem] overflow-hidden border border-border/60 glass-card shadow-xl">
@@ -165,24 +180,40 @@ export function TimeCapsuleScene() {
       <div className="pointer-events-none absolute -top-24 -left-24 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-28 -right-20 h-72 w-72 rounded-full bg-accent/15 blur-3xl" />
 
-      <SceneErrorBoundary fallback={<StaticFallback />}>
-        <Canvas
-          camera={{ position: [3.2, 2.4, 3.2], fov: 40 }}
-          dpr={1}
-          gl={{ alpha: true, antialias: true }}
-          className="[&>*]:!outline-none"
-        >
-          <ambientLight intensity={0.7} />
-          <directionalLight position={[4, 6, 4]} intensity={1.15} />
-          <spotLight position={[-6, 8, -2]} intensity={1.05} angle={0.55} penumbra={0.75} />
+      {/* Always-visible fallback; Canvas fades in once initialized */}
+      <div
+        className={
+          "absolute inset-0 transition-opacity duration-500 " + (canvasReady ? "opacity-0" : "opacity-100")
+        }
+      >
+        <StaticFallback />
+      </div>
 
-          <Suspense fallback={null}>
-            <group position={[0, -0.2, 0]}>
-              <TimeCapsuleMesh colors={colors} />
-            </group>
-          </Suspense>
-        </Canvas>
-      </SceneErrorBoundary>
+      <div
+        className={
+          "absolute inset-0 transition-opacity duration-500 " + (canvasReady ? "opacity-100" : "opacity-0")
+        }
+      >
+        <SceneErrorBoundary fallback={<StaticFallback />}>
+          <Canvas
+            camera={{ position: [3.2, 2.4, 3.2], fov: 40 }}
+            dpr={1}
+            gl={{ alpha: true, antialias: true }}
+            onCreated={() => setCanvasReady(true)}
+            className="[&>*]:!outline-none"
+          >
+            <ambientLight intensity={0.7} />
+            <directionalLight position={[4, 6, 4]} intensity={1.15} />
+            <spotLight position={[-6, 8, -2]} intensity={1.05} angle={0.55} penumbra={0.75} />
+
+            <Suspense fallback={null}>
+              <group position={[0, -0.2, 0]}>
+                <TimeCapsuleMesh colors={colors} />
+              </group>
+            </Suspense>
+          </Canvas>
+        </SceneErrorBoundary>
+      </div>
 
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background/80 via-background/40 to-transparent" />
     </div>
