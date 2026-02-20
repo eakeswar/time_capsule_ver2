@@ -68,30 +68,73 @@ function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string
 
   return (
     <group ref={groupRef}>
-      <mesh>
-        <cylinderGeometry args={[0.6, 0.6, 1.6, 64]} />
-        <meshStandardMaterial color={colors.primary} metalness={0.75} roughness={0.25} />
+      {/* Pedestal */}
+      <mesh position={[0, -1.35, 0]} rotation={[0, 0, 0]}>
+        <cylinderGeometry args={[1.25, 1.05, 0.28, 64]} />
+        <meshStandardMaterial color={colors.muted} metalness={0.55} roughness={0.35} />
       </mesh>
 
+      {/* Glass capsule body */}
+      <mesh>
+        <cylinderGeometry args={[0.62, 0.62, 1.6, 64]} />
+        <meshPhysicalMaterial
+          color={colors.primary}
+          metalness={0.05}
+          roughness={0.08}
+          transmission={0.92}
+          thickness={0.85}
+          ior={1.45}
+          clearcoat={1}
+          clearcoatRoughness={0.08}
+          attenuationColor={colors.accent}
+          attenuationDistance={1.2}
+        />
+      </mesh>
+
+      {/* Glass domes */}
       <mesh position={[0, 0.8, 0]} rotation={[Math.PI, 0, 0]}>
-        <sphereGeometry args={[0.6, 64, 32, 0, Math.PI * 2, 0, Math.PI / 2]} />
-        <meshStandardMaterial color={colors.accent} metalness={0.85} roughness={0.22} />
+        <sphereGeometry args={[0.62, 64, 32, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshPhysicalMaterial
+          color={colors.accent}
+          metalness={0.02}
+          roughness={0.08}
+          transmission={0.95}
+          thickness={0.9}
+          ior={1.45}
+          clearcoat={1}
+          clearcoatRoughness={0.1}
+          attenuationColor={colors.accent}
+          attenuationDistance={1.0}
+        />
       </mesh>
 
       <mesh position={[0, -0.8, 0]}>
-        <sphereGeometry args={[0.6, 64, 32, 0, Math.PI * 2, 0, Math.PI / 2]} />
-        <meshStandardMaterial color={colors.accent} metalness={0.85} roughness={0.22} />
+        <sphereGeometry args={[0.62, 64, 32, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshPhysicalMaterial
+          color={colors.accent}
+          metalness={0.02}
+          roughness={0.08}
+          transmission={0.95}
+          thickness={0.9}
+          ior={1.45}
+          clearcoat={1}
+          clearcoatRoughness={0.1}
+          attenuationColor={colors.accent}
+          attenuationDistance={1.0}
+        />
       </mesh>
 
+      {/* Inner glow */}
       <mesh>
         <sphereGeometry args={[0.22, 32, 32]} />
-        <meshStandardMaterial emissive={colors.accent} emissiveIntensity={1.8} color={colors.accent} />
+        <meshStandardMaterial emissive={colors.accent} emissiveIntensity={2.1} color={colors.accent} />
       </mesh>
 
+      {/* Modern orbit rings */}
       {[0, 1, 2].map((i) => (
         <mesh key={i} rotation={[Math.PI / 2, 0, (i * Math.PI) / 3]}>
-          <torusGeometry args={[1.02, 0.02, 16, 120]} />
-          <meshStandardMaterial color={colors.muted} metalness={0.55} roughness={0.3} />
+          <torusGeometry args={[1.03, 0.03, 16, 140]} />
+          <meshStandardMaterial color={colors.muted} metalness={0.7} roughness={0.25} />
         </mesh>
       ))}
     </group>
