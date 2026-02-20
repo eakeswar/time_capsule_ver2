@@ -1,0 +1,1 @@
+ALTER TABLE public.scheduled_files ADD COLUMN IF NOT EXISTS error_message text;
