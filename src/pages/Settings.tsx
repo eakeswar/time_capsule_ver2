@@ -14,6 +14,7 @@ import { useTheme } from "next-themes";
 import { useAuth } from "@/context/AuthContext";
 import { Popover, PopoverContent } from "@/components/ui/popover";
 import { supabase } from "@/integrations/supabase/client";
+import { supabaseUnsafe } from "@/integrations/supabase/unsafe";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ const Settings = () => {
         // Fallback: get user profile from database
         const fetchUserProfile = async () => {
           try {
-            const { data, error } = await supabase
+            const { data, error } = await supabaseUnsafe
               .from('profiles')
               .select('full_name')
               .eq('id', user.id)
@@ -105,13 +106,13 @@ const Settings = () => {
       if (error) throw error;
       
       // Also update profile if it exists
-      await supabase
-        .from('profiles')
-        .upsert({ 
-          id: user?.id,
-          full_name: name,
-          email: email
-        });
+       await supabaseUnsafe
+         .from('profiles')
+         .upsert({ 
+           id: user?.id,
+           full_name: name,
+           email: email
+         });
         
       toast.success("Profile settings updated successfully");
     } catch (error: any) {

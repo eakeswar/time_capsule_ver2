@@ -1,9 +1,11 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { supabaseUnsafe } from "@/integrations/supabase/unsafe";
 import { Session, User } from "@supabase/supabase-js";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+
 
 type AuthContextType = {
   user: User | null;
@@ -68,7 +70,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsLoading(true);
       
       // First check if user exists to provide better error message
-      const { data: existingUsers, error: queryError } = await supabase
+      const { data: existingUsers, error: queryError } = await supabaseUnsafe
         .from('profiles')
         .select('id')
         .eq('email', email);
@@ -98,14 +100,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // If signup was successful but user not immediately available, check if we need to manually create profile
       if (data?.user) {
         // Check if profile exists
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', data.user.id);
+          const { data: profileData, error: profileError } = await supabaseUnsafe
+            .from('profiles')
+            .select('*')
+            .eq('id', data.user.id);
           
         if ((!profileData || profileData.length === 0) && !profileError) {
           // Create profile manually if needed
-          const { error: insertError } = await supabase
+          const { error: insertError } = await supabaseUnsafe
             .from('profiles')
             .insert({
               id: data.user.id,
