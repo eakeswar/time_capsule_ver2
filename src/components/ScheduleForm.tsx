@@ -163,9 +163,15 @@ const ScheduleForm = ({ onSubmit, editingFile = null, isMobile = false }: Schedu
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <p className="truncate max-w-xs">
-                      Selected: <span className="font-medium">{truncateText(selectedFile.name, 25)}</span>
-                    </p>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="flex-shrink-0">Selected:</span>
+                      <span
+                        className="font-medium truncate min-w-0 max-w-[220px] sm:max-w-[280px] md:max-w-[320px]"
+                        title={selectedFile.name}
+                      >
+                        {selectedFile.name}
+                      </span>
+                    </div>
                   </TooltipTrigger>
                   <TooltipContent side="top" className="max-w-80">
                     <p className="break-all">{selectedFile.name}</p>
@@ -182,8 +188,13 @@ const ScheduleForm = ({ onSubmit, editingFile = null, isMobile = false }: Schedu
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="p-2 border border-input rounded-md bg-muted/30 text-sm truncate w-full max-w-full break-all overflow-hidden">
-                  {truncateText(editingFile.name, 30)}
+                <div
+                  className="p-2 border border-input rounded-md bg-muted/30 text-sm w-full overflow-hidden"
+                  title={editingFile.name}
+                >
+                  <span className="block truncate max-w-[260px] sm:max-w-[320px] md:max-w-full">
+                    {editingFile.name}
+                  </span>
                 </div>
               </TooltipTrigger>
               <TooltipContent side="top" className="max-w-80">
