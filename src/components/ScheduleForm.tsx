@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { Calendar as CalendarIcon, Clock, Mail } from "lucide-react";
 import { format } from "date-fns";
@@ -14,6 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import FileUpload from "./FileUpload";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+
 
 interface ScheduleFormProps {
   onSubmit: (data: ScheduleFormData) => void;
@@ -69,6 +70,35 @@ const ScheduleForm = ({ onSubmit, editingFile = null, isMobile = false }: Schedu
   const handleFileSelect = (file: File) => {
     setSelectedFile(file);
   };
+
+  const selectedNameRef = useRef<HTMLSpanElement | null>(null);
+  const editingNameRef = useRef<HTMLSpanElement | null>(null);
+  const [isSelectedNameTruncated, setIsSelectedNameTruncated] = useState(false);
+  const [isEditingNameTruncated, setIsEditingNameTruncated] = useState(false);
+
+  const measureTruncation = () => {
+    const selectedEl = selectedNameRef.current;
+    const editingEl = editingNameRef.current;
+
+    if (selectedEl) {
+      setIsSelectedNameTruncated(selectedEl.scrollWidth > selectedEl.clientWidth);
+    }
+    if (editingEl) {
+      setIsEditingNameTruncated(editingEl.scrollWidth > editingEl.clientWidth);
+    }
+  };
+
+  useLayoutEffect(() => {
+    measureTruncation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedFile?.name, editingFile?.name, isMobile]);
+
+  useEffect(() => {
+    window.addEventListener("resize", measureTruncation);
+    return () => window.removeEventListener("resize", measureTruncation);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
   const truncateText = (text: string, maxLength: number) => {
     if (!text || text.length <= maxLength) return text;
@@ -161,22 +191,34 @@ const ScheduleForm = ({ onSubmit, editingFile = null, isMobile = false }: Schedu
           {selectedFile && (
             <div className="mt-2 text-sm text-muted-foreground">
               <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="flex-shrink-0">Selected:</span>
-                      <span
-                        className="font-medium truncate min-w-0 max-w-[220px] sm:max-w-[280px] md:max-w-[320px]"
-                        title={selectedFile.name}
-                      >
-                        {selectedFile.name}
-                      </span>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" className="max-w-80">
-                    <p className="break-all">{selectedFile.name}</p>
-                  </TooltipContent>
-                </Tooltip>
+                {isSelectedNameTruncated ? (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="flex-shrink-0">Selected:</span>
+                        <span
+                          ref={selectedNameRef}
+                          className="font-medium truncate min-w-0 max-w-[220px] sm:max-w-[280px] md:max-w-[320px]"
+                        >
+                          {selectedFile.name}
+                        </span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-80">
+                      <p className="break-all">{selectedFile.name}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                ) : (
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="flex-shrink-0">Selected:</span>
+                    <span
+                      ref={selectedNameRef}
+                      className="font-medium truncate min-w-0 max-w-[220px] sm:max-w-[280px] md:max-w-[320px]"
+                    >
+                      {selectedFile.name}
+                    </span>
+                  </div>
+                )}
               </TooltipProvider>
             </div>
           )}
@@ -186,21 +228,32 @@ const ScheduleForm = ({ onSubmit, editingFile = null, isMobile = false }: Schedu
         <div className="space-y-2">
           <Label>File</Label>
           <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div
-                  className="p-2 border border-input rounded-md bg-muted/30 text-sm w-full overflow-hidden"
-                  title={editingFile.name}
+            {isEditingNameTruncated ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="p-2 border border-input rounded-md bg-muted/30 text-sm w-full overflow-hidden">
+                    <span
+                      ref={editingNameRef}
+                      className="block truncate max-w-[260px] sm:max-w-[320px] md:max-w-full"
+                    >
+                      {editingFile.name}
+                    </span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="max-w-80">
+                  <p className="break-all">{editingFile.name}</p>
+                </TooltipContent>
+              </Tooltip>
+            ) : (
+              <div className="p-2 border border-input rounded-md bg-muted/30 text-sm w-full overflow-hidden">
+                <span
+                  ref={editingNameRef}
+                  className="block truncate max-w-[260px] sm:max-w-[320px] md:max-w-full"
                 >
-                  <span className="block truncate max-w-[260px] sm:max-w-[320px] md:max-w-full">
-                    {editingFile.name}
-                  </span>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="top" className="max-w-80">
-                <p className="break-all">{editingFile.name}</p>
-              </TooltipContent>
-            </Tooltip>
+                  {editingFile.name}
+                </span>
+              </div>
+            )}
           </TooltipProvider>
         </div>
       )}

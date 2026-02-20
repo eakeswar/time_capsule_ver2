@@ -1,8 +1,10 @@
 
-import { useState, useRef, ChangeEvent } from "react";
+import { useState, useRef, ChangeEvent, useEffect, useLayoutEffect } from "react";
 import { Upload, File, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
+
 
 interface FileUploadProps {
   onFileSelect: (file: File) => void;
@@ -90,6 +92,27 @@ const FileUpload = ({
     }
   };
 
+  const fileNameRef = useRef<HTMLHeadingElement | null>(null);
+  const [isFileNameTruncated, setIsFileNameTruncated] = useState(false);
+
+  const measureFileName = () => {
+    const el = fileNameRef.current;
+    if (!el) return;
+    setIsFileNameTruncated(el.scrollWidth > el.clientWidth);
+  };
+
+  useLayoutEffect(() => {
+    measureFileName();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedFile?.name]);
+
+  useEffect(() => {
+    window.addEventListener("resize", measureFileName);
+    return () => window.removeEventListener("resize", measureFileName);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+
   return (
     <div className="w-full">
       {!selectedFile ? (
@@ -140,12 +163,26 @@ const FileUpload = ({
             <div className="flex-1 min-w-0">
               <div className="flex items-start gap-2">
                 <div className="min-w-0 flex-1">
-                  <h3 className="font-medium truncate" title={selectedFile.name}>
-                    {selectedFile.name}
-                  </h3>
-                  <p className="text-xs text-muted-foreground">
-                    {formatFileSize(selectedFile.size)}
-                  </p>
+                  <TooltipProvider>
+                    {isFileNameTruncated ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <h3 ref={fileNameRef} className="font-medium truncate">
+                            {selectedFile.name}
+                          </h3>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="max-w-80">
+                          <p className="break-all">{selectedFile.name}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    ) : (
+                      <h3 ref={fileNameRef} className="font-medium truncate">
+                        {selectedFile.name}
+                      </h3>
+                    )}
+                  </TooltipProvider>
+
+                  <p className="text-xs text-muted-foreground">{formatFileSize(selectedFile.size)}</p>
                 </div>
 
                 <Button
