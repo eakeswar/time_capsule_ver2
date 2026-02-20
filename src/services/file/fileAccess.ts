@@ -1,5 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import { supabaseUnsafe } from "@/integrations/supabase/unsafe";
 
 export const getFileByToken = async (token: string): Promise<{
   fileName: string;
@@ -9,7 +10,7 @@ export const getFileByToken = async (token: string): Promise<{
   try {
     console.log("Fetching file with token:", token);
     
-    const { data, error } = await supabase
+    const { data, error } = await supabaseUnsafe
       .from("scheduled_files")
       .select("*")
       .eq("access_token", token)
@@ -36,13 +37,13 @@ export const getFileByToken = async (token: string): Promise<{
     
     if (data.status === 'pending') {
       try {
-        const { error: updateError } = await supabase
-          .from("scheduled_files")
-          .update({ 
-            status: "sent",
-            sent_at: new Date().toISOString() 
-          })
-          .eq("id", data.id);
+          const { error: updateError } = await supabaseUnsafe
+            .from("scheduled_files")
+            .update({
+              status: "sent",
+              sent_at: new Date().toISOString()
+            })
+            .eq("id", data.id);
         
         if (updateError) {
           console.error("Error updating file status:", updateError);

@@ -1,10 +1,12 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import { supabaseUnsafe } from "@/integrations/supabase/unsafe";
 import { toast } from "@/hooks/use-toast";
 import { FileItem } from "@/components/FileCard";
 import { uploadFile } from "./fileStorage";
 import { logDateDetails, formatDateForDatabase } from "@/utils/dateDebugger";
 import { triggerFileSending } from "./fileTrigger";
+
 
 export interface ScheduleFileParams {
   file: File;
@@ -45,7 +47,7 @@ export const scheduleFile = async ({ file, recipient, scheduledDate }: ScheduleF
     console.log("Using formatted date string for scheduled date:", formattedDate);
     
     // Use the RPC function to ensure proper timestamp handling
-    const { error } = await supabase.rpc('schedule_file', {
+    const { error } = await supabaseUnsafe.rpc('schedule_file', {
       p_user_id: userData.user.id,
       p_file_name: file.name, 
       p_file_size: file.size,
@@ -116,7 +118,7 @@ export const updateScheduledFile = async ({ id, recipient, scheduledDate }: Upda
     console.log("Using formatted date string for scheduled date:", formattedDate);
     
     // Use the RPC function to ensure proper timestamp handling
-    const { error } = await supabase.rpc('update_scheduled_file', {
+    const { error } = await supabaseUnsafe.rpc('update_scheduled_file', {
       p_id: id,
       p_recipient_email: recipient,
       p_scheduled_date: formattedDate
@@ -166,7 +168,7 @@ export const updateScheduledFile = async ({ id, recipient, scheduledDate }: Upda
  */
 export const deleteScheduledFile = async (id: string): Promise<void> => {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseUnsafe
       .from("scheduled_files")
       .select("storage_path")
       .eq("id", id)
@@ -182,16 +184,18 @@ export const deleteScheduledFile = async (id: string): Promise<void> => {
       throw error;
     }
     
-    const { error: storageError } = await supabase
-      .storage
-      .from("timecapsule")
-      .remove([data.storage_path]);
-      
-    if (storageError) {
-      console.error("Error removing file from storage:", storageError);
+    if (data?.storage_path) {
+      const { error: storageError } = await supabase
+        .storage
+        .from("timecapsule")
+        .remove([data.storage_path]);
+
+      if (storageError) {
+        console.error("Error removing file from storage:", storageError);
+      }
     }
     
-    const { error: dbError } = await supabase
+    const { error: dbError } = await supabaseUnsafe
       .from("scheduled_files")
       .delete()
       .eq("id", id);
@@ -238,7 +242,7 @@ export const getScheduledFiles = async (): Promise<FileItem[]> => {
       return [];
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseUnsafe
       .from("scheduled_files")
       .select("*")
       .eq("user_id", userData.user.id)
