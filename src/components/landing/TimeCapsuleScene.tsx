@@ -1,5 +1,4 @@
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Sparkles } from "@react-three/drei";
 import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import type * as THREE from "three";
 
@@ -25,11 +24,7 @@ function useThemeHslVars() {
     const root = document.documentElement;
     const obs = new MutationObserver(() => setVars(read()));
     obs.observe(root, { attributes: true, attributeFilter: ["class", "style"] });
-    window.addEventListener("resize", () => setVars(read()));
-    return () => {
-      obs.disconnect();
-      window.removeEventListener("resize", () => setVars(read()));
-    };
+    return () => obs.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -98,8 +93,9 @@ export function TimeCapsuleScene() {
 
       <Canvas
         camera={{ position: [3.2, 2.4, 3.2], fov: 40 }}
+        dpr={[1, 1.5]}
         shadows
-        gl={{ alpha: true, antialias: true }}
+        gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }}
         className="[&>*]:!outline-none"
       >
         <ambientLight intensity={0.6} />
@@ -110,17 +106,7 @@ export function TimeCapsuleScene() {
           <group position={[0, -0.2, 0]}>
             <TimeCapsuleMesh colors={colors} />
           </group>
-          <Sparkles count={90} speed={0.3} size={2} scale={[8, 5, 8]} color={colors.accent} opacity={0.55} />
         </Suspense>
-
-        <OrbitControls
-          enablePan={false}
-          enableZoom={false}
-          autoRotate
-          autoRotateSpeed={0.55}
-          minPolarAngle={Math.PI / 3}
-          maxPolarAngle={(2 * Math.PI) / 3}
-        />
       </Canvas>
 
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background/80 via-background/40 to-transparent" />
