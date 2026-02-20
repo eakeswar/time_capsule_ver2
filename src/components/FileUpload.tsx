@@ -133,24 +133,31 @@ const FileUpload = ({
       ) : (
         <div className="border rounded-xl p-4">
           <div className="flex items-center">
-            <div className="flex items-center justify-center rounded-lg bg-primary/10 h-10 w-10 mr-3">
+            <div className="flex items-center justify-center rounded-lg bg-primary/10 h-10 w-10 mr-3 flex-shrink-0">
               <File className="h-5 w-5 text-primary" />
             </div>
+
             <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between">
-                <h3 className="font-medium truncate">{selectedFile.name}</h3>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-8 w-8 text-muted-foreground hover:text-destructive"
+              <div className="flex items-start gap-2">
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-medium truncate" title={selectedFile.name}>
+                    {selectedFile.name}
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    {formatFileSize(selectedFile.size)}
+                  </p>
+                </div>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 flex-shrink-0 text-muted-foreground hover:text-destructive"
                   onClick={removeFile}
+                  aria-label="Remove selected file"
                 >
                   <X className="h-4 w-4" />
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground">
-                {formatFileSize(selectedFile.size)}
-              </p>
             </div>
           </div>
         </div>
