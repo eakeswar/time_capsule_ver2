@@ -13,6 +13,7 @@ console.log(`Using APP_URL: ${APP_URL}`);
 
 const SMTP_USER = Deno.env.get("SMTP_USER") || "";
 const SMTP_PASS = Deno.env.get("SMTP_PASS") || "";
+const SMTP_FROM_NAME = Deno.env.get("SMTP_FROM_NAME") || "TimeCapsule";
 
 if (!SMTP_USER || !SMTP_PASS) {
   console.error("SMTP_USER or SMTP_PASS is not set in environment variables");
