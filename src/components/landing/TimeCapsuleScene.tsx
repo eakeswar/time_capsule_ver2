@@ -116,7 +116,7 @@ function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string
       clockDoodleRef.current.rotation.y = t * 0.55;
       clockDoodleRef.current.position.y = doodleLayout.clockPos[1] + Math.sin(t * 1.1 + 2) * 0.06;
     }
-  }, [doodleLayout]);
+  });
 
   return (
     <group ref={groupRef}>
@@ -288,6 +288,7 @@ function StaticFallback() {
 export function TimeCapsuleScene() {
   const colors = useThemeHslVars();
   const [canvasReady, setCanvasReady] = useState(false);
+  const isDark = colors.isDark;
 
   return (
     <div className="relative w-full max-w-xl mx-auto aspect-[4/3] rounded-[2rem] overflow-hidden border border-border/60 glass-card shadow-xl">
@@ -317,9 +318,17 @@ export function TimeCapsuleScene() {
             onCreated={() => setCanvasReady(true)}
             className="[&>*]:!outline-none"
           >
-            <ambientLight intensity={0.7} />
-            <directionalLight position={[4, 6, 4]} intensity={1.15} />
-            <spotLight position={[-6, 8, -2]} intensity={1.05} angle={0.55} penumbra={0.75} />
+            <ambientLight intensity={isDark ? 0.85 : 1.05} color={isDark ? colors.accent : colors.muted} />
+            <directionalLight position={[4, 6, 4]} intensity={isDark ? 1.28 : 1.05} color={colors.primary} />
+            <spotLight
+              position={[-6, 8, -2]}
+              intensity={isDark ? 1.2 : 0.92}
+              angle={0.55}
+              penumbra={0.75}
+              color={colors.accent}
+            />
+            <pointLight position={[0, 1.6, 2.4]} intensity={isDark ? 0.7 : 0.5} color={colors.accent} />
+            <pointLight position={[0, -1.2, -2.2]} intensity={isDark ? 0.4 : 0.32} color={colors.primary} />
 
             <Suspense fallback={null}>
               <group position={[0, -0.2, 0]}>
