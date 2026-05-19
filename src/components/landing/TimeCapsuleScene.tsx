@@ -1,5 +1,5 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Clock3, FileText, Share2 } from "lucide-react";
+import { Clock3, FileText } from "lucide-react";
 import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import type * as THREE from "three";
 
