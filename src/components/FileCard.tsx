@@ -30,7 +30,7 @@ export interface FileItem {
   type: string;
   recipient: string;
   scheduledDate: Date;
-  status: 'pending' | 'sent' | 'failed';
+  status: 'pending' | 'processing' | 'sent' | 'failed';
   progress?: number;
   createdAt?: Date;
   access_token?: string;
@@ -100,6 +100,8 @@ const FileCard = ({ file, onDelete, onEdit }: FileCardProps) => {
     switch (status) {
       case 'pending':
         return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300";
+      case 'processing':
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300";
       case 'sent':
         return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300";
       case 'failed':
@@ -112,6 +114,8 @@ const FileCard = ({ file, onDelete, onEdit }: FileCardProps) => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'pending':
+        return <Clock className="h-3 w-3 mr-1" />;
+      case 'processing':
         return <Clock className="h-3 w-3 mr-1" />;
       case 'sent':
         return <CheckCircle className="h-3 w-3 mr-1" />;
@@ -231,7 +235,15 @@ const FileCard = ({ file, onDelete, onEdit }: FileCardProps) => {
             <div className="flex items-center">
               <Badge className={`flex items-center h-6 ${getStatusColor(file.status)}`}>
                 {getStatusIcon(file.status)}
-                <span>{file.status === 'pending' ? 'Pending' : file.status === 'sent' ? 'Sent' : 'Failed'}</span>
+                <span>
+                  {file.status === 'pending'
+                    ? 'Pending'
+                    : file.status === 'processing'
+                    ? 'Processing'
+                    : file.status === 'sent'
+                    ? 'Sent'
+                    : 'Failed'}
+                </span>
               </Badge>
               
               <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
@@ -313,6 +325,8 @@ const FileCard = ({ file, onDelete, onEdit }: FileCardProps) => {
                 <span>
                   {file.status === 'pending' 
                     ? formatDistanceToNow(file.scheduledDate, { addSuffix: true })
+                    : file.status === 'processing'
+                    ? 'Sending now'
                     : file.status === 'sent'
                     ? 'Delivered'
                     : 'Failed'

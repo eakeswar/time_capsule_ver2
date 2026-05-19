@@ -23,7 +23,7 @@ export function useFileFiltering(
     
     // First filter by tab (most restrictive)
     if (activeTab === "pending") {
-      filtered = filtered.filter(file => file.status === "pending");
+      filtered = filtered.filter(file => file.status === "pending" || file.status === "processing");
     } else if (activeTab === "sent") {
       filtered = filtered.filter(file => file.status === "sent");
     } else if (activeTab === "failed") {
