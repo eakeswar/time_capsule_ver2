@@ -1,4 +1,4 @@
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import type * as THREE from "three";
 
@@ -28,6 +28,7 @@ function useThemeHslVars() {
       primary: toThreeSafeHsl(primaryRaw) ?? "#3b82f6",
       accent: toThreeSafeHsl(accentRaw) ?? "#38bdf8",
       muted: toThreeSafeHsl(mutedRaw) ?? "#94a3b8",
+      isDark: root.classList.contains("dark"),
     };
   };
 
@@ -65,11 +66,30 @@ class SceneErrorBoundary extends React.Component<
   }
 }
 
-function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string; muted: string } }) {
+function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string; muted: string; isDark: boolean } }) {
   const groupRef = useRef<THREE.Group>(null);
   const fileDoodleRef = useRef<THREE.Group>(null);
   const shareDoodleRef = useRef<THREE.Group>(null);
   const clockDoodleRef = useRef<THREE.Group>(null);
+  const { viewport } = useThree();
+
+  const doodleLayout = useMemo(() => {
+    const compact = viewport.width < 6.8 || viewport.height < 4.6;
+    return compact
+      ? {
+          filePos: [-1.12, 0.66, 0.26] as [number, number, number],
+          sharePos: [1.15, -0.24, 0.26] as [number, number, number],
+          clockPos: [-0.98, -0.7, 0.2] as [number, number, number],
+          scale: 0.82,
+        }
+      : {
+          filePos: [-1.55, 0.78, 0.35] as [number, number, number],
+          sharePos: [1.6, -0.38, 0.35] as [number, number, number],
+          clockPos: [-1.45, -0.82, 0.25] as [number, number, number],
+          scale: 1,
+        };
+  }, [viewport.height, viewport.width]);
+
   const prefersReduced = useMemo(
     () => (typeof window !== "undefined" ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false),
     []
@@ -84,19 +104,19 @@ function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string
 
     if (fileDoodleRef.current) {
       fileDoodleRef.current.rotation.y = -t * 0.35;
-      fileDoodleRef.current.position.y = 0.78 + Math.sin(t * 1.25) * 0.08;
+      fileDoodleRef.current.position.y = doodleLayout.filePos[1] + Math.sin(t * 1.25) * 0.08;
     }
 
     if (shareDoodleRef.current) {
       shareDoodleRef.current.rotation.z = Math.sin(t * 0.7) * 0.18;
-      shareDoodleRef.current.position.y = -0.38 + Math.sin(t * 1.05 + 1.2) * 0.08;
+      shareDoodleRef.current.position.y = doodleLayout.sharePos[1] + Math.sin(t * 1.05 + 1.2) * 0.08;
     }
 
     if (clockDoodleRef.current) {
       clockDoodleRef.current.rotation.y = t * 0.55;
-      clockDoodleRef.current.position.y = -0.82 + Math.sin(t * 1.1 + 2) * 0.06;
+      clockDoodleRef.current.position.y = doodleLayout.clockPos[1] + Math.sin(t * 1.1 + 2) * 0.06;
     }
-  });
+  }, [doodleLayout]);
 
   return (
     <group ref={groupRef}>
@@ -171,7 +191,7 @@ function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string
       ))}
 
       {/* Doodle: file card */}
-      <group ref={fileDoodleRef} position={[-1.55, 0.78, 0.35]}>
+      <group ref={fileDoodleRef} position={doodleLayout.filePos} scale={doodleLayout.scale}>
         <mesh>
           <boxGeometry args={[0.58, 0.76, 0.1]} />
           <meshPhysicalMaterial
@@ -197,7 +217,7 @@ function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string
       </group>
 
       {/* Doodle: sharing icon */}
-      <group ref={shareDoodleRef} position={[1.6, -0.38, 0.35]}>
+      <group ref={shareDoodleRef} position={doodleLayout.sharePos} scale={doodleLayout.scale}>
         {[
           [0, 0.24, 0],
           [-0.34, -0.2, 0],
@@ -225,7 +245,7 @@ function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string
       </group>
 
       {/* Doodle: delivery clock */}
-      <group ref={clockDoodleRef} position={[-1.45, -0.82, 0.25]}>
+      <group ref={clockDoodleRef} position={doodleLayout.clockPos} scale={doodleLayout.scale}>
         <mesh>
           <torusGeometry args={[0.26, 0.05, 16, 64]} />
           <meshPhysicalMaterial
