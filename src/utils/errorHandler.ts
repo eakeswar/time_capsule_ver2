@@ -31,7 +31,7 @@ export const handleError = (
   } = options;
   
   // Log in development always, but in production only if explicitly requested
-  if (process.env.NODE_ENV !== 'production' || logInProduction) {
+  if (import.meta.env.DEV || logInProduction) {
     console.error(`[${context}] ${message}:`, error);
   }
   
@@ -60,7 +60,7 @@ export const handleSuccess = (
   } = options;
   
   // Log success in development
-  if (process.env.NODE_ENV !== 'production') {
+  if (import.meta.env.DEV) {
     console.log(`[${context}] ${message}`);
   }
   
@@ -75,7 +75,7 @@ export const handleSuccess = (
  * Log debug messages (only in development)
  */
 export const logDebug = (message: string, context: string = "debug", data?: any): void => {
-  if (process.env.NODE_ENV !== 'production') {
+  if (import.meta.env.DEV) {
     if (data) {
       console.log(`[${context}] ${message}:`, data);
     } else {
