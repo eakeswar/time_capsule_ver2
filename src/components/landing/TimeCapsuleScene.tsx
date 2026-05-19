@@ -282,58 +282,32 @@ function StaticFallback() {
     <div className="absolute inset-0">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/10 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background/80 via-background/40 to-transparent" />
-      <div className="pointer-events-none absolute right-8 top-8 sm:right-10 sm:top-10 glass-effect rounded-2xl border-2 border-primary/35 px-4 py-2 flex items-center gap-2 rotate-[-7deg] shadow-md animate-float">
+      <div className="pointer-events-none absolute right-8 top-10 sm:right-10 sm:top-12 glass-effect rounded-2xl border border-border/60 px-3 py-2 flex items-center gap-2 rotate-[-4deg] shadow-sm">
         <FileText className="h-4 w-4 text-primary" />
-        <span className="text-sm font-semibold text-foreground/90">FILE</span>
+        <span className="text-xs font-medium text-foreground/85">File</span>
       </div>
-      <div className="pointer-events-none absolute right-10 top-16 sm:right-14 sm:top-[4.35rem] glass-effect rounded-2xl border-2 border-accent/40 px-4 py-2 flex items-center gap-2 rotate-[6deg] shadow-md animate-float">
+      <div className="pointer-events-none absolute right-10 top-20 sm:right-14 sm:top-24 glass-effect rounded-2xl border border-border/60 px-3 py-2 flex items-center gap-2 rotate-[3deg] shadow-sm">
         <Share2 className="h-4 w-4 text-accent" />
-        <span className="text-sm font-semibold text-foreground/90">SHARE</span>
+        <span className="text-xs font-medium text-foreground/85">Share</span>
       </div>
-      <div className="pointer-events-none absolute right-8 bottom-8 sm:right-10 sm:bottom-10 glass-effect rounded-2xl border-2 border-primary/35 px-4 py-2 flex items-center gap-2 rotate-[4deg] shadow-md animate-float">
+      <div className="pointer-events-none absolute right-8 bottom-9 sm:right-10 sm:bottom-11 glass-effect rounded-2xl border border-border/60 px-3 py-2 flex items-center gap-2 rotate-[2deg] shadow-sm">
         <Clock3 className="h-4 w-4 text-primary" />
-        <span className="text-sm font-semibold text-foreground/90">SCHEDULE</span>
+        <span className="text-xs font-medium text-foreground/85">Schedule</span>
       </div>
 
-      <div className="pointer-events-none absolute left-10 top-16 sm:left-14 sm:top-20 rotate-[-10deg]">
-        <div className="h-2 w-2 rounded-full bg-primary/80" />
-        <div className="mt-2 h-[3px] w-12 rounded-full bg-accent/80" />
-        <div className="mt-2 ml-2 h-[3px] w-7 rounded-full bg-primary/70" />
+      <div className="pointer-events-none absolute left-12 top-20 sm:left-16 sm:top-24 rotate-[-7deg]">
+        <div className="h-2 w-2 rounded-full bg-primary/70" />
+        <div className="mt-2 h-[2px] w-10 rounded-full bg-accent/70" />
       </div>
-      <div className="pointer-events-none absolute left-14 bottom-14 sm:left-20 sm:bottom-16 rotate-[8deg]">
-        <div className="h-3 w-3 rounded-full border-2 border-primary/70" />
-        <div className="mt-2 h-[3px] w-14 rounded-full bg-primary/70" />
-      </div>
-
-      <div className="pointer-events-none absolute left-1/2 top-1/3 -translate-x-1/2">
-        <div className="relative h-6 w-20">
-          <div className="absolute left-0 top-2 h-[3px] w-12 rounded-full bg-primary/75" />
-          <div className="absolute right-1 top-1 h-0 w-0 border-y-[5px] border-y-transparent border-l-[8px] border-l-primary/80" />
-        </div>
+      <div className="pointer-events-none absolute left-16 bottom-16 sm:left-20 sm:bottom-20 rotate-[6deg]">
+        <div className="h-2.5 w-2.5 rounded-full border border-primary/65" />
+        <div className="mt-2 h-[2px] w-12 rounded-full bg-primary/60" />
       </div>
 
-      <div className="pointer-events-none absolute left-8 bottom-24 sm:left-10 sm:bottom-28">
-        <div className="h-5 w-5 border-t-2 border-r-2 border-primary/65 rotate-45" />
-        <div className="-mt-1 ml-4 h-5 w-5 border-b-2 border-l-2 border-accent/65 -rotate-12" />
-      </div>
-
-      <div className="pointer-events-none absolute left-1/3 top-1/2 -translate-x-1/2 -translate-y-1/2">
-        <div className="relative h-12 w-12">
-          <div className="absolute left-1/2 top-1/2 h-1 w-7 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/80" />
-          <div className="absolute left-1/2 top-1/2 h-7 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/80" />
-          <div className="absolute left-1/2 top-1/2 h-1 w-6 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-full bg-primary/75" />
-          <div className="absolute left-1/2 top-1/2 h-1 w-6 -translate-x-1/2 -translate-y-1/2 -rotate-45 rounded-full bg-accent/75" />
-          <div className="absolute left-1/2 top-1/2 h-1 w-4 -translate-x-1/2 -translate-y-1/2 rotate-[22deg] rounded-full bg-primary/70" />
-          <div className="absolute left-1/2 top-1/2 h-1 w-4 -translate-x-1/2 -translate-y-1/2 -rotate-[22deg] rounded-full bg-accent/70" />
-        </div>
-      </div>
-
-      <div className="pointer-events-none absolute left-[30%] top-[62%] -translate-x-1/2 -translate-y-1/2 rotate-[-10deg]">
-        <div className="relative h-10 w-14">
-          <div className="absolute left-0 top-2 h-0 w-0 border-y-[9px] border-y-transparent border-l-[24px] border-l-primary/70" />
-          <div className="absolute left-3 top-4 h-0 w-0 border-y-[6px] border-y-transparent border-l-[15px] border-l-background/70" />
-          <div className="absolute left-5 top-6 h-[2px] w-9 rounded-full bg-accent/80" />
-          <div className="absolute left-1 top-8 h-[2px] w-6 rounded-full bg-primary/70" />
+      <div className="pointer-events-none absolute left-[44%] top-[38%] -translate-x-1/2 -translate-y-1/2">
+        <div className="relative h-4 w-16">
+          <div className="absolute left-0 top-1.5 h-[2px] w-10 rounded-full bg-primary/75" />
+          <div className="absolute right-0 top-0 h-0 w-0 border-y-[4px] border-y-transparent border-l-[7px] border-l-primary/75" />
         </div>
       </div>
     </div>
@@ -350,7 +324,7 @@ export function TimeCapsuleScene() {
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/15 via-accent/10 to-transparent" />
       <div className="pointer-events-none absolute -top-24 -left-24 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-28 -right-20 h-72 w-72 rounded-full bg-accent/15 blur-3xl" />
-      <div className={"pointer-events-none absolute inset-0 z-10 transition-opacity duration-500 " + (canvasReady ? "opacity-90" : "opacity-100")}>
+      <div className={"pointer-events-none absolute inset-0 z-10 transition-opacity duration-500 " + (canvasReady ? "opacity-38" : "opacity-100")}>
         <StaticFallback />
       </div>
 
