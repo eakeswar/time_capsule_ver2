@@ -26,35 +26,23 @@ const Index = () => {
         <div className="container-custom relative">
           <div className="grid items-center gap-12 md:grid-cols-12">
             <div className="md:col-span-6">
-              <div
-                className="inline-flex items-center gap-2 px-3 py-1 mb-6 rounded-full bg-primary/10 text-primary text-sm font-medium slide-down"
-                style={{ animationDelay: "200ms" }}
-              >
+              <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 rounded-full bg-primary/10 text-primary text-sm font-medium">
                 <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
                 Introducing TimeCapsule
               </div>
 
-              <h1
-                className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-balance slide-down"
-                style={{ animationDelay: "400ms" }}
-              >
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-balance">
                 Schedule files to be sent{" "}
                 <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                   exactly when needed
                 </span>
               </h1>
 
-              <p
-                className="text-lg md:text-xl text-muted-foreground mb-8 max-w-xl slide-down"
-                style={{ animationDelay: "600ms" }}
-              >
+              <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-xl">
                 Upload once, pick the perfect moment, and TimeCapsule delivers your file automatically—right on time.
               </p>
 
-              <div
-                className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 slide-down"
-                style={{ animationDelay: "800ms" }}
-              >
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
                 <Link to="/auth" className="w-full sm:w-auto">
                   <Button className="hero-button bg-primary hover:bg-primary/90 w-full sm:w-auto">
                     Get Started
@@ -81,7 +69,7 @@ const Index = () => {
               </div>
             </div>
 
-            <div className="md:col-span-6 md:justify-self-end slide-up" style={{ animationDelay: "500ms" }}>
+            <div className="md:col-span-6 md:justify-self-end">
               <TimeCapsuleScene />
             </div>
           </div>
