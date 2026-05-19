@@ -69,7 +69,7 @@ const Index = () => {
               </div>
             </div>
 
-            <div className="md:col-span-6 md:justify-self-end">
+            <div className="md:col-span-6 md:justify-self-end w-full">
               <TimeCapsuleScene />
             </div>
           </div>
