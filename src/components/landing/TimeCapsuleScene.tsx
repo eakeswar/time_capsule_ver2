@@ -1,4 +1,5 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Clock3, FileText, Share2 } from "lucide-react";
 import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import type * as THREE from "three";
 
@@ -276,14 +277,26 @@ function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string
   );
 }
 
-function StaticFallback() {
+function StaticFallback({ showLabel = true }: { showLabel?: boolean }) {
   return (
     <div className="absolute inset-0">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/10 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background/80 via-background/40 to-transparent" />
-      <div className="absolute inset-0 grid place-items-center">
+      <div className="pointer-events-none absolute right-8 top-8 sm:right-10 sm:top-10 glass-effect rounded-xl px-3 py-2 flex items-center gap-2">
+        <FileText className="h-4 w-4 text-primary" />
+        <span className="text-xs text-foreground/80">File</span>
+      </div>
+      <div className="pointer-events-none absolute right-8 top-14 sm:right-10 sm:top-16 glass-effect rounded-xl px-3 py-2 flex items-center gap-2">
+        <Share2 className="h-4 w-4 text-accent" />
+        <span className="text-xs text-foreground/80">Share</span>
+      </div>
+      <div className="pointer-events-none absolute right-8 bottom-8 sm:right-10 sm:bottom-10 glass-effect rounded-xl px-3 py-2 flex items-center gap-2">
+        <Clock3 className="h-4 w-4 text-primary" />
+        <span className="text-xs text-foreground/80">Schedule</span>
+      </div>
+      <div className={"absolute inset-0 grid place-items-center transition-opacity duration-300 " + (showLabel ? "opacity-100" : "opacity-0")}>
         <div className="glass-effect rounded-3xl px-6 py-4">
-          <p className="text-sm text-muted-foreground">Cinematic mode (fallback)</p>
+          <p className="text-sm text-muted-foreground">Cinematic mode</p>
           <p className="text-lg font-semibold">TimeCapsule</p>
         </div>
       </div>
@@ -297,26 +310,21 @@ export function TimeCapsuleScene() {
   const isDark = colors.isDark;
 
   return (
-    <div className="relative w-full max-w-xl mx-auto aspect-[4/3] rounded-[2rem] overflow-hidden border border-border/60 glass-card shadow-xl">
+    <div className="relative w-full max-w-xl mx-auto h-[320px] sm:h-[360px] md:h-[420px] lg:h-[460px] rounded-[2rem] overflow-hidden border border-border/60 glass-card shadow-xl">
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/15 via-accent/10 to-transparent" />
       <div className="pointer-events-none absolute -top-24 -left-24 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-28 -right-20 h-72 w-72 rounded-full bg-accent/15 blur-3xl" />
+      <div className={"pointer-events-none absolute inset-0 z-10 transition-opacity duration-500 " + (canvasReady ? "opacity-45" : "opacity-100")}>
+        <StaticFallback showLabel={!canvasReady} />
+      </div>
 
       {/* Always-visible fallback; Canvas fades in once initialized */}
       <div
         className={
-          "absolute inset-0 transition-opacity duration-500 " + (canvasReady ? "opacity-0" : "opacity-100")
+          "absolute inset-0 z-0 transition-opacity duration-500 " + (canvasReady ? "opacity-100" : "opacity-0")
         }
       >
-        <StaticFallback />
-      </div>
-
-      <div
-        className={
-          "absolute inset-0 transition-opacity duration-500 " + (canvasReady ? "opacity-100" : "opacity-0")
-        }
-      >
-        <SceneErrorBoundary fallback={<StaticFallback />}>
+        <SceneErrorBoundary fallback={<StaticFallback showLabel={true} />}>
           <Canvas
             camera={{ position: [3.2, 2.4, 3.2], fov: 40 }}
             dpr={1}
