@@ -1,4 +1,4 @@
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import type * as THREE from "three";
 
@@ -28,6 +28,7 @@ function useThemeHslVars() {
       primary: toThreeSafeHsl(primaryRaw) ?? "#3b82f6",
       accent: toThreeSafeHsl(accentRaw) ?? "#38bdf8",
       muted: toThreeSafeHsl(mutedRaw) ?? "#94a3b8",
+      isDark: root.classList.contains("dark"),
     };
   };
 
@@ -65,11 +66,30 @@ class SceneErrorBoundary extends React.Component<
   }
 }
 
-function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string; muted: string } }) {
+function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string; muted: string; isDark: boolean } }) {
   const groupRef = useRef<THREE.Group>(null);
   const fileDoodleRef = useRef<THREE.Group>(null);
   const shareDoodleRef = useRef<THREE.Group>(null);
   const clockDoodleRef = useRef<THREE.Group>(null);
+  const { viewport } = useThree();
+
+  const doodleLayout = useMemo(() => {
+    const compact = viewport.width < 7.6 || viewport.height < 5.2;
+    return compact
+      ? {
+          filePos: [-0.96, 0.58, 0.24] as [number, number, number],
+          sharePos: [0.98, -0.18, 0.24] as [number, number, number],
+          clockPos: [-0.86, -0.62, 0.2] as [number, number, number],
+          scale: 0.74,
+        }
+      : {
+          filePos: [-1.3, 0.72, 0.3] as [number, number, number],
+          sharePos: [1.34, -0.3, 0.3] as [number, number, number],
+          clockPos: [-1.2, -0.74, 0.22] as [number, number, number],
+          scale: 0.9,
+        };
+  }, [viewport.height, viewport.width]);
+
   const prefersReduced = useMemo(
     () => (typeof window !== "undefined" ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false),
     []
@@ -84,17 +104,17 @@ function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string
 
     if (fileDoodleRef.current) {
       fileDoodleRef.current.rotation.y = -t * 0.35;
-      fileDoodleRef.current.position.y = 0.78 + Math.sin(t * 1.25) * 0.08;
+      fileDoodleRef.current.position.y = doodleLayout.filePos[1] + Math.sin(t * 1.25) * 0.08;
     }
 
     if (shareDoodleRef.current) {
       shareDoodleRef.current.rotation.z = Math.sin(t * 0.7) * 0.18;
-      shareDoodleRef.current.position.y = -0.38 + Math.sin(t * 1.05 + 1.2) * 0.08;
+      shareDoodleRef.current.position.y = doodleLayout.sharePos[1] + Math.sin(t * 1.05 + 1.2) * 0.08;
     }
 
     if (clockDoodleRef.current) {
       clockDoodleRef.current.rotation.y = t * 0.55;
-      clockDoodleRef.current.position.y = -0.82 + Math.sin(t * 1.1 + 2) * 0.06;
+      clockDoodleRef.current.position.y = doodleLayout.clockPos[1] + Math.sin(t * 1.1 + 2) * 0.06;
     }
   });
 
@@ -171,7 +191,7 @@ function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string
       ))}
 
       {/* Doodle: file card */}
-      <group ref={fileDoodleRef} position={[-1.55, 0.78, 0.35]}>
+      <group ref={fileDoodleRef} position={doodleLayout.filePos} scale={doodleLayout.scale}>
         <mesh>
           <boxGeometry args={[0.58, 0.76, 0.1]} />
           <meshPhysicalMaterial
@@ -182,6 +202,8 @@ function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string
             metalness={0.08}
             clearcoat={1}
             clearcoatRoughness={0.05}
+            emissive={colors.accent}
+            emissiveIntensity={colors.isDark ? 0.22 : 0.12}
           />
         </mesh>
         <mesh position={[0.16, 0.26, 0.06]}>
@@ -197,7 +219,7 @@ function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string
       </group>
 
       {/* Doodle: sharing icon */}
-      <group ref={shareDoodleRef} position={[1.6, -0.38, 0.35]}>
+      <group ref={shareDoodleRef} position={doodleLayout.sharePos} scale={doodleLayout.scale}>
         {[
           [0, 0.24, 0],
           [-0.34, -0.2, 0],
@@ -212,6 +234,8 @@ function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string
               roughness={0.08}
               metalness={0.05}
               clearcoat={1}
+              emissive={i === 0 ? colors.primary : colors.accent}
+              emissiveIntensity={colors.isDark ? 0.3 : 0.14}
             />
           </mesh>
         ))}
@@ -225,7 +249,7 @@ function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string
       </group>
 
       {/* Doodle: delivery clock */}
-      <group ref={clockDoodleRef} position={[-1.45, -0.82, 0.25]}>
+      <group ref={clockDoodleRef} position={doodleLayout.clockPos} scale={doodleLayout.scale}>
         <mesh>
           <torusGeometry args={[0.26, 0.05, 16, 64]} />
           <meshPhysicalMaterial
@@ -235,6 +259,8 @@ function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string
             roughness={0.12}
             metalness={0.15}
             clearcoat={1}
+            emissive={colors.primary}
+            emissiveIntensity={colors.isDark ? 0.28 : 0.13}
           />
         </mesh>
         <mesh position={[0, 0.09, 0.03]}>
@@ -268,6 +294,7 @@ function StaticFallback() {
 export function TimeCapsuleScene() {
   const colors = useThemeHslVars();
   const [canvasReady, setCanvasReady] = useState(false);
+  const isDark = colors.isDark;
 
   return (
     <div className="relative w-full max-w-xl mx-auto aspect-[4/3] rounded-[2rem] overflow-hidden border border-border/60 glass-card shadow-xl">
@@ -297,9 +324,17 @@ export function TimeCapsuleScene() {
             onCreated={() => setCanvasReady(true)}
             className="[&>*]:!outline-none"
           >
-            <ambientLight intensity={0.7} />
-            <directionalLight position={[4, 6, 4]} intensity={1.15} />
-            <spotLight position={[-6, 8, -2]} intensity={1.05} angle={0.55} penumbra={0.75} />
+            <ambientLight intensity={isDark ? 0.85 : 1.05} color={isDark ? colors.accent : colors.muted} />
+            <directionalLight position={[4, 6, 4]} intensity={isDark ? 1.28 : 1.05} color={colors.primary} />
+            <spotLight
+              position={[-6, 8, -2]}
+              intensity={isDark ? 1.2 : 0.92}
+              angle={0.55}
+              penumbra={0.75}
+              color={colors.accent}
+            />
+            <pointLight position={[0, 1.6, 2.4]} intensity={isDark ? 0.7 : 0.5} color={colors.accent} />
+            <pointLight position={[0, -1.2, -2.2]} intensity={isDark ? 0.4 : 0.32} color={colors.primary} />
 
             <Suspense fallback={null}>
               <group position={[0, -0.2, 0]}>
