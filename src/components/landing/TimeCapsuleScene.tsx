@@ -316,6 +316,26 @@ function StaticFallback() {
         <div className="h-5 w-5 border-t-2 border-r-2 border-primary/65 rotate-45" />
         <div className="-mt-1 ml-4 h-5 w-5 border-b-2 border-l-2 border-accent/65 -rotate-12" />
       </div>
+
+      <div className="pointer-events-none absolute left-1/3 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div className="relative h-12 w-12">
+          <div className="absolute left-1/2 top-1/2 h-1 w-7 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/80" />
+          <div className="absolute left-1/2 top-1/2 h-7 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/80" />
+          <div className="absolute left-1/2 top-1/2 h-1 w-6 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-full bg-primary/75" />
+          <div className="absolute left-1/2 top-1/2 h-1 w-6 -translate-x-1/2 -translate-y-1/2 -rotate-45 rounded-full bg-accent/75" />
+          <div className="absolute left-1/2 top-1/2 h-1 w-4 -translate-x-1/2 -translate-y-1/2 rotate-[22deg] rounded-full bg-primary/70" />
+          <div className="absolute left-1/2 top-1/2 h-1 w-4 -translate-x-1/2 -translate-y-1/2 -rotate-[22deg] rounded-full bg-accent/70" />
+        </div>
+      </div>
+
+      <div className="pointer-events-none absolute left-[30%] top-[62%] -translate-x-1/2 -translate-y-1/2 rotate-[-10deg]">
+        <div className="relative h-10 w-14">
+          <div className="absolute left-0 top-2 h-0 w-0 border-y-[9px] border-y-transparent border-l-[24px] border-l-primary/70" />
+          <div className="absolute left-3 top-4 h-0 w-0 border-y-[6px] border-y-transparent border-l-[15px] border-l-background/70" />
+          <div className="absolute left-5 top-6 h-[2px] w-9 rounded-full bg-accent/80" />
+          <div className="absolute left-1 top-8 h-[2px] w-6 rounded-full bg-primary/70" />
+        </div>
+      </div>
     </div>
   );
 }
