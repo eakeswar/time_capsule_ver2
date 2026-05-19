@@ -46,7 +46,7 @@ export function useFileFiltering(
     }
     
     // Log filtering debug info in development only
-    if (process.env.NODE_ENV !== 'production') {
+    if (import.meta.env.DEV) {
       logDebug(`Filtered ${files.length} files to ${filtered.length}`, "file-filtering", {
         activeTab,
         statusFilter,
