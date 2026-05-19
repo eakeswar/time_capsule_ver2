@@ -74,19 +74,19 @@ function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string
   const { viewport } = useThree();
 
   const doodleLayout = useMemo(() => {
-    const compact = viewport.width < 6.8 || viewport.height < 4.6;
+    const compact = viewport.width < 7.6 || viewport.height < 5.2;
     return compact
       ? {
-          filePos: [-1.12, 0.66, 0.26] as [number, number, number],
-          sharePos: [1.15, -0.24, 0.26] as [number, number, number],
-          clockPos: [-0.98, -0.7, 0.2] as [number, number, number],
-          scale: 0.82,
+          filePos: [-0.96, 0.58, 0.24] as [number, number, number],
+          sharePos: [0.98, -0.18, 0.24] as [number, number, number],
+          clockPos: [-0.86, -0.62, 0.2] as [number, number, number],
+          scale: 0.74,
         }
       : {
-          filePos: [-1.55, 0.78, 0.35] as [number, number, number],
-          sharePos: [1.6, -0.38, 0.35] as [number, number, number],
-          clockPos: [-1.45, -0.82, 0.25] as [number, number, number],
-          scale: 1,
+          filePos: [-1.3, 0.72, 0.3] as [number, number, number],
+          sharePos: [1.34, -0.3, 0.3] as [number, number, number],
+          clockPos: [-1.2, -0.74, 0.22] as [number, number, number],
+          scale: 0.9,
         };
   }, [viewport.height, viewport.width]);
 
@@ -202,6 +202,8 @@ function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string
             metalness={0.08}
             clearcoat={1}
             clearcoatRoughness={0.05}
+            emissive={colors.accent}
+            emissiveIntensity={colors.isDark ? 0.22 : 0.12}
           />
         </mesh>
         <mesh position={[0.16, 0.26, 0.06]}>
@@ -232,6 +234,8 @@ function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string
               roughness={0.08}
               metalness={0.05}
               clearcoat={1}
+              emissive={i === 0 ? colors.primary : colors.accent}
+              emissiveIntensity={colors.isDark ? 0.3 : 0.14}
             />
           </mesh>
         ))}
@@ -255,6 +259,8 @@ function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string
             roughness={0.12}
             metalness={0.15}
             clearcoat={1}
+            emissive={colors.primary}
+            emissiveIntensity={colors.isDark ? 0.28 : 0.13}
           />
         </mesh>
         <mesh position={[0, 0.09, 0.03]}>
