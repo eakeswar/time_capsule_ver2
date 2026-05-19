@@ -283,17 +283,19 @@ function StaticFallback() {
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/10 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background/80 via-background/40 to-transparent" />
       <div className="pointer-events-none absolute inset-0 grid place-items-center">
-        <div className="relative h-44 w-44 rounded-full border border-border/60 bg-card/20 backdrop-blur-sm shadow-[0_0_80px_hsl(var(--primary)/0.2)]">
-          <div className="absolute inset-3 rounded-full border border-accent/35 bg-gradient-to-br from-primary/20 to-accent/10" />
-          <div className="absolute left-1/2 top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/75 shadow-[0_0_22px_hsl(var(--primary)/0.55)]" />
-          <div className="absolute right-6 top-8 h-2 w-10 rounded-full bg-white/30" />
+        <div className="relative h-48 w-48 rounded-full border border-border/55 bg-card/20 backdrop-blur-sm shadow-[0_0_90px_hsl(var(--primary)/0.22)]">
+          <div className="absolute inset-4 rounded-full border border-accent/35 bg-gradient-to-br from-primary/18 to-accent/10" />
+          <div className="absolute inset-[24%] rounded-full border border-primary/35" />
+          <div className="absolute left-1/2 top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/80 shadow-[0_0_24px_hsl(var(--primary)/0.6)]" />
+          <div className="absolute right-7 top-8 h-2 w-10 rounded-full bg-white/30" />
+          <div className="absolute left-1/2 top-1/2 h-[72%] w-[72%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-primary/20" />
         </div>
       </div>
 
-      <div className="pointer-events-none absolute right-10 top-12 rounded-xl border border-border/60 bg-card/35 px-3 py-2 backdrop-blur-sm rotate-[-4deg]">
+      <div className="pointer-events-none absolute right-10 top-12 rounded-xl border border-border/60 bg-card/35 px-3 py-2 backdrop-blur-sm rotate-[-4deg] shadow-sm">
         <FileText className="h-4 w-4 text-primary" />
       </div>
-      <div className="pointer-events-none absolute right-10 bottom-12 rounded-xl border border-border/60 bg-card/35 px-3 py-2 backdrop-blur-sm rotate-[4deg]">
+      <div className="pointer-events-none absolute right-10 bottom-12 rounded-xl border border-border/60 bg-card/35 px-3 py-2 backdrop-blur-sm rotate-[4deg] shadow-sm">
         <Clock3 className="h-4 w-4 text-accent" />
       </div>
 
@@ -315,7 +317,7 @@ export function TimeCapsuleScene() {
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/15 via-accent/10 to-transparent" />
       <div className="pointer-events-none absolute -top-24 -left-24 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-28 -right-20 h-72 w-72 rounded-full bg-accent/15 blur-3xl" />
-      <div className={"pointer-events-none absolute inset-0 z-10 transition-opacity duration-500 " + (canvasReady ? "opacity-18" : "opacity-100")}>
+      <div className={"pointer-events-none absolute inset-0 z-10 transition-opacity duration-500 " + (canvasReady ? "opacity-14" : "opacity-100")}>
         <StaticFallback />
       </div>
 

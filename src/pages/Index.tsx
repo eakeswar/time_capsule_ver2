@@ -28,18 +28,19 @@ const Index = () => {
             <div className="md:col-span-6">
               <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 rounded-full bg-primary/10 text-primary text-sm font-medium">
                 <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-                Introducing TimeCapsule
+                Digital Time Capsule
               </div>
 
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-balance">
-                Schedule files to be sent{" "}
+                Send your files to the future{" "}
                 <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                  exactly when needed
+                  and open them right on time
                 </span>
               </h1>
 
               <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-xl">
-                Upload once, pick the perfect moment, and TimeCapsule delivers your file automatically—right on time.
+                Seal a digital time capsule in seconds, choose the exact release date, and let TimeCapsule deliver it
+                at the perfect moment.
               </p>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
@@ -55,16 +56,16 @@ const Index = () => {
 
               <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3">
                 <div className="glass-effect rounded-2xl p-4">
-                  <p className="text-xs text-muted-foreground">Delivery Precision</p>
-                  <p className="text-lg font-semibold">Minute-level</p>
+                  <p className="text-xs text-muted-foreground">Capsule Timing</p>
+                  <p className="text-lg font-semibold">Minute-precise</p>
                 </div>
                 <div className="glass-effect rounded-2xl p-4">
-                  <p className="text-xs text-muted-foreground">File Types</p>
-                  <p className="text-lg font-semibold">Any format</p>
+                  <p className="text-xs text-muted-foreground">Memory Formats</p>
+                  <p className="text-lg font-semibold">Any file</p>
                 </div>
                 <div className="hidden sm:block glass-effect rounded-2xl p-4">
-                  <p className="text-xs text-muted-foreground">Security</p>
-                  <p className="text-lg font-semibold">Access token</p>
+                  <p className="text-xs text-muted-foreground">Capsule Security</p>
+                  <p className="text-lg font-semibold">Private access</p>
                 </div>
               </div>
             </div>
