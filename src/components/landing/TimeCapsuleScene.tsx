@@ -67,6 +67,9 @@ class SceneErrorBoundary extends React.Component<
 
 function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string; muted: string } }) {
   const groupRef = useRef<THREE.Group>(null);
+  const fileDoodleRef = useRef<THREE.Group>(null);
+  const shareDoodleRef = useRef<THREE.Group>(null);
+  const clockDoodleRef = useRef<THREE.Group>(null);
   const prefersReduced = useMemo(
     () => (typeof window !== "undefined" ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false),
     []
@@ -78,6 +81,21 @@ function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string
     groupRef.current.rotation.y = t * 0.25;
     groupRef.current.rotation.x = Math.sin(t * 0.45) * 0.07;
     groupRef.current.position.y = Math.sin(t * 0.9) * 0.07;
+
+    if (fileDoodleRef.current) {
+      fileDoodleRef.current.rotation.y = -t * 0.35;
+      fileDoodleRef.current.position.y = 0.78 + Math.sin(t * 1.25) * 0.08;
+    }
+
+    if (shareDoodleRef.current) {
+      shareDoodleRef.current.rotation.z = Math.sin(t * 0.7) * 0.18;
+      shareDoodleRef.current.position.y = -0.38 + Math.sin(t * 1.05 + 1.2) * 0.08;
+    }
+
+    if (clockDoodleRef.current) {
+      clockDoodleRef.current.rotation.y = t * 0.55;
+      clockDoodleRef.current.position.y = -0.82 + Math.sin(t * 1.1 + 2) * 0.06;
+    }
   });
 
   return (
@@ -151,6 +169,83 @@ function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string
           <meshStandardMaterial color={colors.muted} metalness={0.7} roughness={0.25} />
         </mesh>
       ))}
+
+      {/* Doodle: file card */}
+      <group ref={fileDoodleRef} position={[-1.55, 0.78, 0.35]}>
+        <mesh>
+          <boxGeometry args={[0.58, 0.76, 0.1]} />
+          <meshPhysicalMaterial
+            color={colors.accent}
+            transmission={0.88}
+            thickness={0.3}
+            roughness={0.1}
+            metalness={0.08}
+            clearcoat={1}
+            clearcoatRoughness={0.05}
+          />
+        </mesh>
+        <mesh position={[0.16, 0.26, 0.06]}>
+          <boxGeometry args={[0.13, 0.13, 0.03]} />
+          <meshStandardMaterial color={colors.primary} metalness={0.35} roughness={0.25} />
+        </mesh>
+        {[-0.16, 0, 0.16].map((y) => (
+          <mesh key={y} position={[0, y, 0.06]}>
+            <boxGeometry args={[0.32, 0.03, 0.02]} />
+            <meshStandardMaterial color={colors.muted} metalness={0.2} roughness={0.4} />
+          </mesh>
+        ))}
+      </group>
+
+      {/* Doodle: sharing icon */}
+      <group ref={shareDoodleRef} position={[1.6, -0.38, 0.35]}>
+        {[
+          [0, 0.24, 0],
+          [-0.34, -0.2, 0],
+          [0.34, -0.2, 0],
+        ].map((pos, i) => (
+          <mesh key={i} position={pos as [number, number, number]}>
+            <sphereGeometry args={[0.11, 20, 20]} />
+            <meshPhysicalMaterial
+              color={i === 0 ? colors.primary : colors.accent}
+              transmission={0.9}
+              thickness={0.2}
+              roughness={0.08}
+              metalness={0.05}
+              clearcoat={1}
+            />
+          </mesh>
+        ))}
+
+        {[[-0.16, 0.02, Math.PI / 6], [0.16, 0.02, -Math.PI / 6]].map(([x, y, zRot], i) => (
+          <mesh key={`link-${i}`} position={[x as number, y as number, 0]} rotation={[0, 0, zRot as number]}>
+            <cylinderGeometry args={[0.025, 0.025, 0.42, 16]} />
+            <meshStandardMaterial color={colors.muted} metalness={0.6} roughness={0.25} />
+          </mesh>
+        ))}
+      </group>
+
+      {/* Doodle: delivery clock */}
+      <group ref={clockDoodleRef} position={[-1.45, -0.82, 0.25]}>
+        <mesh>
+          <torusGeometry args={[0.26, 0.05, 16, 64]} />
+          <meshPhysicalMaterial
+            color={colors.primary}
+            transmission={0.86}
+            thickness={0.2}
+            roughness={0.12}
+            metalness={0.15}
+            clearcoat={1}
+          />
+        </mesh>
+        <mesh position={[0, 0.09, 0.03]}>
+          <boxGeometry args={[0.03, 0.14, 0.03]} />
+          <meshStandardMaterial color={colors.accent} metalness={0.55} roughness={0.2} />
+        </mesh>
+        <mesh position={[0.08, 0, 0.03]} rotation={[0, 0, -0.65]}>
+          <boxGeometry args={[0.03, 0.1, 0.03]} />
+          <meshStandardMaterial color={colors.accent} metalness={0.55} roughness={0.2} />
+        </mesh>
+      </group>
     </group>
   );
 }
