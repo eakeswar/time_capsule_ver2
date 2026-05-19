@@ -277,28 +277,30 @@ function TimeCapsuleMesh({ colors }: { colors: { primary: string; accent: string
   );
 }
 
-function StaticFallback({ showLabel = true }: { showLabel?: boolean }) {
+function StaticFallback() {
   return (
     <div className="absolute inset-0">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/10 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background/80 via-background/40 to-transparent" />
-      <div className="pointer-events-none absolute right-8 top-8 sm:right-10 sm:top-10 glass-effect rounded-xl px-3 py-2 flex items-center gap-2">
+      <div className="pointer-events-none absolute right-8 top-8 sm:right-10 sm:top-10 glass-effect rounded-2xl px-3 py-2 flex items-center gap-2 rotate-[-5deg] shadow-md">
         <FileText className="h-4 w-4 text-primary" />
         <span className="text-xs text-foreground/80">File</span>
       </div>
-      <div className="pointer-events-none absolute right-8 top-14 sm:right-10 sm:top-16 glass-effect rounded-xl px-3 py-2 flex items-center gap-2">
+      <div className="pointer-events-none absolute right-10 top-16 sm:right-14 sm:top-[4.35rem] glass-effect rounded-2xl px-3 py-2 flex items-center gap-2 rotate-[4deg] shadow-md">
         <Share2 className="h-4 w-4 text-accent" />
         <span className="text-xs text-foreground/80">Share</span>
       </div>
-      <div className="pointer-events-none absolute right-8 bottom-8 sm:right-10 sm:bottom-10 glass-effect rounded-xl px-3 py-2 flex items-center gap-2">
+      <div className="pointer-events-none absolute right-8 bottom-8 sm:right-10 sm:bottom-10 glass-effect rounded-2xl px-3 py-2 flex items-center gap-2 rotate-[2deg] shadow-md">
         <Clock3 className="h-4 w-4 text-primary" />
         <span className="text-xs text-foreground/80">Schedule</span>
       </div>
-      <div className={"absolute inset-0 grid place-items-center transition-opacity duration-300 " + (showLabel ? "opacity-100" : "opacity-0")}>
-        <div className="glass-effect rounded-3xl px-6 py-4">
-          <p className="text-sm text-muted-foreground">Cinematic mode</p>
-          <p className="text-lg font-semibold">TimeCapsule</p>
-        </div>
+      <div className="pointer-events-none absolute left-10 top-16 sm:left-14 sm:top-20">
+        <div className="h-2 w-2 rounded-full bg-primary/80 shadow-[0_0_14px_hsl(var(--primary)/0.55)]" />
+        <div className="mt-2 h-[2px] w-10 rounded-full bg-accent/70" />
+      </div>
+      <div className="pointer-events-none absolute left-14 bottom-14 sm:left-20 sm:bottom-16">
+        <div className="h-3 w-3 rounded-full border border-primary/60" />
+        <div className="mt-2 h-[2px] w-12 rounded-full bg-primary/55" />
       </div>
     </div>
   );
@@ -315,7 +317,7 @@ export function TimeCapsuleScene() {
       <div className="pointer-events-none absolute -top-24 -left-24 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-28 -right-20 h-72 w-72 rounded-full bg-accent/15 blur-3xl" />
       <div className={"pointer-events-none absolute inset-0 z-10 transition-opacity duration-500 " + (canvasReady ? "opacity-45" : "opacity-100")}>
-        <StaticFallback showLabel={!canvasReady} />
+        <StaticFallback />
       </div>
 
       {/* Always-visible fallback; Canvas fades in once initialized */}
@@ -324,7 +326,7 @@ export function TimeCapsuleScene() {
           "absolute inset-0 z-0 transition-opacity duration-500 " + (canvasReady ? "opacity-100" : "opacity-0")
         }
       >
-        <SceneErrorBoundary fallback={<StaticFallback showLabel={true} />}>
+        <SceneErrorBoundary fallback={<StaticFallback />}>
           <Canvas
             camera={{ position: [3.2, 2.4, 3.2], fov: 40 }}
             dpr={1}
