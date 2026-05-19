@@ -41,13 +41,13 @@ const StatusTabs = ({
           </div>
         ) : filteredFiles.length === 0 ? (
           <div className="text-center py-12 border border-dashed rounded-xl">
-            <p className="text-muted-foreground mb-4">No files found</p>
+            <p className="text-muted-foreground mb-4">No time capsules yet</p>
             <Button 
               variant="outline" 
               onClick={onOpenDialog}
             >
               <Plus className="h-4 w-4 mr-2" /> 
-              Schedule Your First File
+              Schedule Your First Capsule
             </Button>
           </div>
         ) : (
