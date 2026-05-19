@@ -282,15 +282,15 @@ function StaticFallback({ showLabel = true }: { showLabel?: boolean }) {
     <div className="absolute inset-0">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/10 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background/80 via-background/40 to-transparent" />
-      <div className="pointer-events-none absolute left-4 top-5 sm:left-6 sm:top-6 glass-effect rounded-xl px-3 py-2 flex items-center gap-2">
+      <div className="pointer-events-none absolute left-8 top-8 sm:left-10 sm:top-10 glass-effect rounded-xl px-3 py-2 flex items-center gap-2">
         <FileText className="h-4 w-4 text-primary" />
         <span className="text-xs text-foreground/80">File</span>
       </div>
-      <div className="pointer-events-none absolute right-4 top-16 sm:right-6 sm:top-20 glass-effect rounded-xl px-3 py-2 flex items-center gap-2">
+      <div className="pointer-events-none absolute right-8 top-14 sm:right-10 sm:top-16 glass-effect rounded-xl px-3 py-2 flex items-center gap-2">
         <Share2 className="h-4 w-4 text-accent" />
         <span className="text-xs text-foreground/80">Share</span>
       </div>
-      <div className="pointer-events-none absolute left-8 bottom-12 sm:left-10 sm:bottom-14 glass-effect rounded-xl px-3 py-2 flex items-center gap-2">
+      <div className="pointer-events-none absolute left-8 bottom-8 sm:left-10 sm:bottom-10 glass-effect rounded-xl px-3 py-2 flex items-center gap-2">
         <Clock3 className="h-4 w-4 text-primary" />
         <span className="text-xs text-foreground/80">Schedule</span>
       </div>
