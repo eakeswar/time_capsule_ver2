@@ -1,4 +1,5 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Clock3, FileText, Share2 } from "lucide-react";
 import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import type * as THREE from "three";
 
@@ -281,6 +282,18 @@ function StaticFallback({ showLabel = true }: { showLabel?: boolean }) {
     <div className="absolute inset-0">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/10 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background/80 via-background/40 to-transparent" />
+      <div className="pointer-events-none absolute left-4 top-5 sm:left-6 sm:top-6 glass-effect rounded-xl px-3 py-2 flex items-center gap-2">
+        <FileText className="h-4 w-4 text-primary" />
+        <span className="text-xs text-foreground/80">File</span>
+      </div>
+      <div className="pointer-events-none absolute right-4 top-16 sm:right-6 sm:top-20 glass-effect rounded-xl px-3 py-2 flex items-center gap-2">
+        <Share2 className="h-4 w-4 text-accent" />
+        <span className="text-xs text-foreground/80">Share</span>
+      </div>
+      <div className="pointer-events-none absolute left-8 bottom-12 sm:left-10 sm:bottom-14 glass-effect rounded-xl px-3 py-2 flex items-center gap-2">
+        <Clock3 className="h-4 w-4 text-primary" />
+        <span className="text-xs text-foreground/80">Schedule</span>
+      </div>
       <div className={"absolute inset-0 grid place-items-center transition-opacity duration-300 " + (showLabel ? "opacity-100" : "opacity-0")}>
         <div className="glass-effect rounded-3xl px-6 py-4">
           <p className="text-sm text-muted-foreground">Cinematic mode</p>
@@ -301,7 +314,9 @@ export function TimeCapsuleScene() {
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/15 via-accent/10 to-transparent" />
       <div className="pointer-events-none absolute -top-24 -left-24 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-28 -right-20 h-72 w-72 rounded-full bg-accent/15 blur-3xl" />
-      <StaticFallback showLabel={!canvasReady} />
+      <div className={"absolute inset-0 transition-opacity duration-500 " + (canvasReady ? "opacity-70" : "opacity-100")}>
+        <StaticFallback showLabel={!canvasReady} />
+      </div>
 
       {/* Always-visible fallback; Canvas fades in once initialized */}
       <div
