@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
-import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
+import nodemailer from "npm:nodemailer@6.9.15";
 
 const supabaseClient = createClient(
   Deno.env.get("SUPABASE_URL") || "",
@@ -33,29 +33,28 @@ function logWithTimestamp(level: string, message: string, data?: any) {
 }
 
 async function sendEmailViaSMTP(to: string, subject: string, htmlBody: string): Promise<{ success: boolean; error?: string }> {
-  const client = new SmtpClient();
-
   try {
-    await client.connectTLS({
-      hostname: "smtp.gmail.com",
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
       port: 465,
-      username: SMTP_USER,
-      password: SMTP_PASS,
+      secure: true,
+      auth: {
+        user: SMTP_USER,
+        pass: SMTP_PASS,
+      },
     });
 
-    await client.send({
-      from: SMTP_USER,
-      to: to,
+    await transporter.sendMail({
+      from: `${SMTP_FROM_NAME} <${SMTP_USER}>`,
+      to,
       subject: subject,
-      content: "Please view this email in an HTML-capable email client.",
       html: htmlBody,
+      text: "Please view this email in an HTML-capable email client.",
     });
 
-    await client.close();
     return { success: true };
   } catch (error: any) {
     logWithTimestamp('error', 'SMTP send error', { message: error.message, stack: error.stack });
-    try { await client.close(); } catch (_) { /* ignore close errors */ }
     return { success: false, error: error.message || "Unknown SMTP error" };
   }
 }
