@@ -4,7 +4,7 @@
  */
 
 // Environment detection
-const isDevelopment = process.env.NODE_ENV !== 'production';
+const isDevelopment = import.meta.env.DEV;
 
 /**
  * Logs detailed information about a date for debugging purposes
