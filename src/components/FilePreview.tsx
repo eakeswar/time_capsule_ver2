@@ -14,6 +14,53 @@ interface FilePreviewProps {
 }
 
 const FilePreview = ({ file, isLoading }: FilePreviewProps) => {
+  const [pdfBlobUrl, setPdfBlobUrl] = React.useState<string | null>(null);
+  const [pdfLoadError, setPdfLoadError] = React.useState(false);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    let objectUrl: string | null = null;
+
+    const preparePdfPreview = async () => {
+      if (file.type !== 'application/pdf' || !file.url) {
+        setPdfBlobUrl(null);
+        setPdfLoadError(false);
+        return;
+      }
+
+      try {
+        setPdfLoadError(false);
+        const response = await fetch(file.url);
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch PDF: ${response.status}`);
+        }
+
+        const blob = await response.blob();
+        objectUrl = URL.createObjectURL(blob);
+
+        if (isMounted) {
+          setPdfBlobUrl(objectUrl);
+        }
+      } catch (error) {
+        console.error('Error preparing PDF preview:', error);
+        if (isMounted) {
+          setPdfBlobUrl(null);
+          setPdfLoadError(true);
+        }
+      }
+    };
+
+    preparePdfPreview();
+
+    return () => {
+      isMounted = false;
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+  }, [file.type, file.url]);
+
   if (isLoading) {
     return (
       <DialogContent className="sm:max-w-md">
@@ -74,11 +121,35 @@ const FilePreview = ({ file, isLoading }: FilePreviewProps) => {
         )}
 
         {file.type === 'application/pdf' && (
-          <iframe 
-            src={file.url} 
-            className="w-full h-[60vh] border-0 rounded-md" 
-            title={file.name}
-          />
+          <div className="w-full space-y-3">
+            {pdfBlobUrl && !pdfLoadError ? (
+              <iframe
+                src={pdfBlobUrl}
+                className="w-full h-[60vh] border-0 rounded-md"
+                title={file.name}
+              />
+            ) : (
+              <div className="flex flex-col items-center justify-center py-6">
+                <p className="text-muted-foreground text-center mb-4">
+                  PDF preview is blocked in embedded mode on some browsers.
+                </p>
+              </div>
+            )}
+
+            <div className="flex justify-center gap-2">
+              <Button asChild variant="secondary">
+                <a href={file.url} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Open PDF
+                </a>
+              </Button>
+              <Button asChild>
+                <a href={file.url} download={file.name}>
+                  Download PDF
+                </a>
+              </Button>
+            </div>
+          </div>
         )}
 
         {!file.type.startsWith('image/') && 
