@@ -96,7 +96,7 @@ const FilePreview = ({ file, isLoading }: FilePreviewProps) => {
         canvas.width = viewport.width;
         canvas.height = viewport.height;
 
-        await page.render({ canvasContext: context, viewport }).promise;
+        await page.render({ canvas, canvasContext: context, viewport }).promise;
       } catch (error) {
         console.error('Error rendering PDF preview:', error);
         if (!cancelled) {
