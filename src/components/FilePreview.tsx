@@ -19,7 +19,7 @@ const FilePreview = ({ file, isLoading }: FilePreviewProps) => {
   const [pdfBlobUrl, setPdfBlobUrl] = React.useState<string | null>(null);
   const [pdfLoadError, setPdfLoadError] = React.useState(false);
   const [isRenderingPdf, setIsRenderingPdf] = React.useState(false);
-  const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
+  const [pdfPreviewImage, setPdfPreviewImage] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
@@ -32,6 +32,7 @@ const FilePreview = ({ file, isLoading }: FilePreviewProps) => {
     const preparePdfPreview = async () => {
       if (file.type !== 'application/pdf' || !file.url) {
         setPdfBlobUrl(null);
+        setPdfPreviewImage(null);
         setPdfLoadError(false);
         return;
       }
@@ -49,11 +50,13 @@ const FilePreview = ({ file, isLoading }: FilePreviewProps) => {
 
         if (isMounted) {
           setPdfBlobUrl(objectUrl);
+          setPdfPreviewImage(null);
         }
       } catch (error) {
         console.error('Error preparing PDF preview:', error);
         if (isMounted) {
           setPdfBlobUrl(null);
+          setPdfPreviewImage(null);
           setPdfLoadError(true);
         }
       }
@@ -73,20 +76,21 @@ const FilePreview = ({ file, isLoading }: FilePreviewProps) => {
     let cancelled = false;
 
     const renderPdfToCanvas = async () => {
-      if (file.type !== 'application/pdf' || !pdfBlobUrl || !canvasRef.current) return;
+      if (file.type !== 'application/pdf' || !pdfBlobUrl) return;
 
       try {
         setIsRenderingPdf(true);
         setPdfLoadError(false);
+        setPdfPreviewImage(null);
 
         const loadingTask = getDocument({ url: pdfBlobUrl });
         const pdf = await loadingTask.promise;
         const page = await pdf.getPage(1);
 
-        if (cancelled || !canvasRef.current) return;
+        if (cancelled) return;
 
         const viewport = page.getViewport({ scale: 1.5 });
-        const canvas = canvasRef.current;
+        const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
 
         if (!context) {
@@ -97,6 +101,10 @@ const FilePreview = ({ file, isLoading }: FilePreviewProps) => {
         canvas.height = viewport.height;
 
         await page.render({ canvas, canvasContext: context, viewport }).promise;
+
+        if (!cancelled) {
+          setPdfPreviewImage(canvas.toDataURL('image/png'));
+        }
       } catch (error) {
         console.error('Error rendering PDF preview:', error);
         if (!cancelled) {
@@ -185,7 +193,11 @@ const FilePreview = ({ file, isLoading }: FilePreviewProps) => {
                     <span>Rendering PDF preview...</span>
                   </div>
                 ) : (
-                  <canvas ref={canvasRef} className="max-w-full h-auto" />
+                  pdfPreviewImage ? (
+                    <img src={pdfPreviewImage} alt={`Preview of ${file.name}`} className="max-w-full h-auto rounded-sm" />
+                  ) : (
+                    <div className="text-sm text-muted-foreground">Preparing preview...</div>
+                  )
                 )}
               </div>
             )}
