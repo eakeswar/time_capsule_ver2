@@ -3,6 +3,8 @@ import React from 'react';
 import { DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Loader2, ExternalLink } from 'lucide-react';
 import { Button } from './ui/button';
+import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist';
+import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
 interface FilePreviewProps {
   file: {
@@ -16,6 +18,12 @@ interface FilePreviewProps {
 const FilePreview = ({ file, isLoading }: FilePreviewProps) => {
   const [pdfBlobUrl, setPdfBlobUrl] = React.useState<string | null>(null);
   const [pdfLoadError, setPdfLoadError] = React.useState(false);
+  const [isRenderingPdf, setIsRenderingPdf] = React.useState(false);
+  const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
+
+  React.useEffect(() => {
+    GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+  }, []);
 
   React.useEffect(() => {
     let isMounted = true;
@@ -60,6 +68,53 @@ const FilePreview = ({ file, isLoading }: FilePreviewProps) => {
       }
     };
   }, [file.type, file.url]);
+
+  React.useEffect(() => {
+    let cancelled = false;
+
+    const renderPdfToCanvas = async () => {
+      if (file.type !== 'application/pdf' || !pdfBlobUrl || !canvasRef.current) return;
+
+      try {
+        setIsRenderingPdf(true);
+        setPdfLoadError(false);
+
+        const loadingTask = getDocument({ url: pdfBlobUrl });
+        const pdf = await loadingTask.promise;
+        const page = await pdf.getPage(1);
+
+        if (cancelled || !canvasRef.current) return;
+
+        const viewport = page.getViewport({ scale: 1.5 });
+        const canvas = canvasRef.current;
+        const context = canvas.getContext('2d');
+
+        if (!context) {
+          throw new Error('Failed to create canvas context for PDF preview');
+        }
+
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        await page.render({ canvasContext: context, viewport }).promise;
+      } catch (error) {
+        console.error('Error rendering PDF preview:', error);
+        if (!cancelled) {
+          setPdfLoadError(true);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsRenderingPdf(false);
+        }
+      }
+    };
+
+    renderPdfToCanvas();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [file.type, pdfBlobUrl]);
 
   if (isLoading) {
     return (
@@ -122,16 +177,23 @@ const FilePreview = ({ file, isLoading }: FilePreviewProps) => {
 
         {file.type === 'application/pdf' && (
           <div className="w-full space-y-3">
-            {pdfBlobUrl && !pdfLoadError ? (
-              <iframe
-                src={pdfBlobUrl}
-                className="w-full h-[60vh] border-0 rounded-md"
-                title={file.name}
-              />
-            ) : (
+            {!pdfLoadError && (
+              <div className="w-full h-[60vh] overflow-auto rounded-md border border-border bg-muted/20 flex items-center justify-center p-2">
+                {isRenderingPdf ? (
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>Rendering PDF preview...</span>
+                  </div>
+                ) : (
+                  <canvas ref={canvasRef} className="max-w-full h-auto" />
+                )}
+              </div>
+            )}
+
+            {(pdfLoadError || !pdfBlobUrl) && (
               <div className="flex flex-col items-center justify-center py-6">
                 <p className="text-muted-foreground text-center mb-4">
-                  PDF preview is blocked in embedded mode on some browsers.
+                  In-app PDF preview is unavailable for this file in your browser.
                 </p>
               </div>
             )}
